@@ -6,15 +6,17 @@ import { ComparisonTable } from "@/components/ComparisonTable";
 import { ChartsPanel } from "@/components/ChartsPanel";
 import { MetricWeightsPanel } from "@/components/MetricWeights";
 import { defaultWeights, scoreCompanies } from "@/lib/scoring";
-import { CompanyRawMetrics, MetricWeights } from "@/lib/types";
+import { CompanyDebtToEbitdaHistory, CompanyRawMetrics, MetricWeights } from "@/lib/types";
 
 interface CompanyApiResponse {
   source: string;
   companies: CompanyRawMetrics[];
+  debtToEbitdaHistory: CompanyDebtToEbitdaHistory[];
 }
 
 export default function HomePage() {
   const [companies, setCompanies] = useState<CompanyRawMetrics[]>([]);
+  const [debtToEbitdaHistory, setDebtToEbitdaHistory] = useState<CompanyDebtToEbitdaHistory[]>([]);
   const [weights, setWeights] = useState<MetricWeights>(defaultWeights);
   const [source, setSource] = useState<string>("Loading...");
   const [loading, setLoading] = useState(true);
@@ -30,6 +32,7 @@ export default function HomePage() {
         }
         const data = (await response.json()) as CompanyApiResponse;
         setCompanies(data.companies);
+        setDebtToEbitdaHistory(data.debtToEbitdaHistory);
         setSource(data.source);
       } catch (err) {
         setError((err as Error).message);
@@ -67,7 +70,7 @@ export default function HomePage() {
         <div className="space-y-6">
           <MetricWeightsPanel weights={weights} onChange={onWeightChange} />
           <Leaderboard companies={rankedCompanies} />
-          <ChartsPanel companies={rankedCompanies} />
+          <ChartsPanel companies={rankedCompanies} debtToEbitdaHistory={debtToEbitdaHistory} />
           <ComparisonTable companies={rankedCompanies} />
         </div>
       )}

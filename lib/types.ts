@@ -39,3 +39,14 @@ export interface MetricWeights {
   esgScore: number;
   debtToEquity: number;
 }
+
+export interface DebtToEbitdaPoint {
+  year: number;
+  value: number;
+}
+
+export interface CompanyDebtToEbitdaHistory {
+  key: CompanyKey;
+  companyName: string;
+  series: DebtToEbitdaPoint[];
+}

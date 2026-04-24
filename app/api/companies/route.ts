@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { fallbackCompanyData } from "@/lib/companyData";
-import { CompanyRawMetrics } from "@/lib/types";
+import { fallbackDebtToEbitdaHistory } from "@/lib/debtToEbitdaData";
+import { CompanyDebtToEbitdaHistory, CompanyRawMetrics } from "@/lib/types";
 
 const companies = fallbackCompanyData.map((company) => ({
   key: company.key,
@@ -39,6 +40,7 @@ async function fetchAlphaVantageOverview(
 export async function GET() {
   const apiKey = process.env.ALPHA_VANTAGE_API_KEY;
   const mergedData: CompanyRawMetrics[] = [...fallbackCompanyData];
+  const debtToEbitdaHistory: CompanyDebtToEbitdaHistory[] = [...fallbackDebtToEbitdaHistory];
 
   if (apiKey) {
     await Promise.all(
@@ -63,6 +65,7 @@ export async function GET() {
 
   return NextResponse.json({
     source: apiKey ? "Fallback + Alpha Vantage live overrides" : "Fallback public dataset",
-    companies: mergedData
+    companies: mergedData,
+    debtToEbitdaHistory
   });
 }
